@@ -9,7 +9,7 @@ const usersList = document.querySelector(".user-list");
 const roomList = document.querySelector(".room-list");
 const chatDisplay = document.querySelector(".chat-display");
 
-msgInput.focus();
+// msgInput.focus();
 
 const sendMessage = (e) => {
     e.preventDefault();
@@ -33,8 +33,8 @@ const enterRoom = (e) => {
     }
 };
 
-document.querySelector("form-msg").addEventListener("submit", sendMessage);
-document.querySelector("form-join").addEventListener("submit", enterRoom);
+document.querySelector(".form-msg").addEventListener("submit", sendMessage);
+document.querySelector(".form-join").addEventListener("submit", enterRoom);
 
 msgInput.addEventListener("keypress", () => {
     socket.emit("activity", nameInput.value);

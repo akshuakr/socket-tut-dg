@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3500;
 
-const ADMIN = "admin";
+const ADMIN = "Admin";
 
 const app = express();
 
@@ -24,9 +24,12 @@ const expressServer = app.listen(PORT, () => console.log(`listening on port ${PO
 
 const UsersState = {
     users: [],
-    setUsers: (newUsersArray) => {
+    setUsers: function (newUsersArray) {
         this.users = newUsersArray;
     },
+    // setUsers: (newUsersArray) => {
+    //     this.users = newUsersArray;
+    // },
 };
 
 const io = new Server(expressServer, {
