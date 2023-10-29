@@ -5,7 +5,7 @@ const nameInput = document.querySelector("#name");
 const chatRoom = document.querySelector("#room");
 
 const activity = document.querySelector(".activity");
-const userList = document.querySelector(".user-list");
+const usersList = document.querySelector(".user-list");
 const roomList = document.querySelector(".room-list");
 const chatDisplay = document.querySelector(".chat-display");
 
@@ -61,8 +61,12 @@ socket.on("message", (data) => {
         <span class="post__header--time">${time}</span>
         </div>
         <div class = "post__text">${text}</div>`;
+    } else {
+        li.innerHTML = `<div class="post__text">${text}</div>`;
     }
-    document.querySelector("ul").appendChild(li);
+    document.querySelector(".chat-display").appendChild(li);
+
+    chatDisplay.scrollTop = chatDisplay.scrollHeight;
 });
 
 let activityTimer;
@@ -75,3 +79,32 @@ socket.on("activity", (name) => {
         activity.textContent = "";
     }, 1500);
 });
+
+socket.on("userList", ({ users }) => showUsers(users));
+socket.on("roomList", ({ rooms }) => showRooms(rooms));
+
+const showUsers = (users) => {
+    usersList.textContent = ``;
+    if (users) {
+        usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`;
+        users.forEach((user, i) => {
+            usersList.textContent += ` ${user.name}`;
+            if (users.length > 1 && i !== users.length - 1) {
+                usersList.textContent += ",";
+            }
+        });
+    }
+};
+
+const showRooms = (rooms) => {
+    roomList.textContent = ``;
+    if (rooms) {
+        roomList.innerHTML = `<em>Active Rooms:</em>`;
+        rooms.forEach((room, i) => {
+            roomList.textContent += ` ${room}`;
+            if (rooms.length > 1 && i !== rooms.length - 1) {
+                roomList.textContent += ",";
+            }
+        });
+    }
+};

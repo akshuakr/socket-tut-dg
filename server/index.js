@@ -4,13 +4,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const misc = import.meta.url;
-console.log(misc);
+// console.log(misc);
 
 const __filename = fileURLToPath(misc);
-console.log(__filename);
+// console.log(__filename);
 
 const __dirname = path.dirname(__filename);
-console.log(__dirname);
+// console.log(__dirname);
 
 const PORT = process.env.PORT || 3500;
 
