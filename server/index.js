@@ -27,10 +27,14 @@ const UsersState = {
     setUsers: function (newUsersArray) {
         this.users = newUsersArray;
     },
-    // setUsers: (newUsersArray) => {
-    //     this.users = newUsersArray;
-    // },
 };
+
+// const UsersState = {
+//     users: [],
+//     setUsers: (newUsersArray) => {
+//         this.users = newUsersArray;
+//     },
+// };
 
 const io = new Server(expressServer, {
     cors: {
