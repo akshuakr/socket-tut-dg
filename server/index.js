@@ -14,11 +14,20 @@ console.log(__dirname);
 
 const PORT = process.env.PORT || 3500;
 
+const ADMIN = "admin";
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 
 const expressServer = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+
+const UsersState = {
+    users: [],
+    setUsers: (newUsersArray) => {
+        this.users = newUsersArray;
+    },
+};
 
 const io = new Server(expressServer, {
     cors: {
@@ -32,7 +41,24 @@ const io = new Server(expressServer, {
 io.on("connection", (socket) => {
     console.log(`User ${socket.id} connected`);
 
-    socket.emit("message", "Welcome to chat app");
+    socket.emit("message", buildMsg(ADMIN, `Welcome to Chat App!`));
+
+    socket.on("enterRoom", ({ name, room }) => {
+        const prevRoom = getUser(socket.id)?.room;
+
+        if (prevRoom) {
+            socket.leave(prevRoom);
+            io.to(prevRoom).emit("message", buildMsg(ADMIN, `${name} has left the room`));
+        }
+
+        const user = activateUser(socket.id, name, room);
+
+        if (prevRoom) {
+            io.to(prevRoom).emit("userList", {
+                users: getUsersInRoom(prevRoom),
+            });
+        }
+    });
 
     socket.broadcast.emit("message", `User ${socket.id.substring(0, 5)} connected`);
 
@@ -49,3 +75,37 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("activity", name);
     });
 });
+
+const buildMsg = (name, text) => {
+    return {
+        name,
+        text,
+        time: new Intl.DateTimeFormat("defaule", {
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+        }).format(new Date()),
+    };
+};
+
+const activateUser = (id, name, room) => {
+    const user = { id, name, room };
+    UsersState.setUsers([...UsersState.users.filter((user) => user.id !== id), user]);
+    return user;
+};
+
+const userLeavesApp = (id) => {
+    UsersState.setUsers(UsersState.users.filter((user) => user.id !== id));
+};
+
+const getUser = (id) => {
+    return UsersState.users.find((user) => user.id === id);
+};
+
+const getUsersInRoom = (room) => {
+    return UsersState.users.filter((user) => user.room === room);
+};
+
+const getAllActiveRooms = () => {
+    return Array.from(new Set(UsersState.users.map((user) => user.room)));
+};
