@@ -2,6 +2,7 @@ const socket = io("ws://localhost:3500");
 
 //first commit from mac
 //commit from mac
+//commit from mac 1
 
 const msgInput = document.querySelector("#message");
 const nameInput = document.querySelector("#name");
